@@ -12,16 +12,16 @@ provider "aws" {
 }
 
 module "s3" {
-  source = "./modules"
+  source = "./modules/s3"
   bucket_name = var.backup_bucket_name
 }
 
 module "rds" {
-  source = "./modules"
+  source = "./modules/rds"
   rds_instance_id = var.rds_instance_id
 }
 
 module "ec2" {
-  source = "./modules"
+  source = "./modules/ec2"
   ec2_instance_id = var.ec2_instance_id
 }
