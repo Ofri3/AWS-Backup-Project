@@ -22,9 +22,9 @@ resource "aws_backup_selection" "backup_resources" {
   plan_id      = aws_backup_plan.daily_backup.id
 
   resources = concat(
-    module.s3_backup.resources,
-    module.rds_backup.resources,
-    module.ec2_backup.resources
+    module.s3_backup.resources
+#     module.rds_backup.resources,
+#     module.ec2_backup.resources
   )
 }
 
