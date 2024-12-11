@@ -27,3 +27,36 @@ resource "aws_backup_selection" "backup_resources" {
     module.ec2_backup.resources
   )
 }
+
+resource "aws_iam_role" "backup_role" {
+  name = "backup-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "backup.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "backup_role_policy" {
+  name = "backup-policy"
+  role = aws_iam_role.backup_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = ["ec2:CreateSnapshot", "rds:CreateDBSnapshot", "s3:GetObject", "s3:PutObject"],
+        Effect   = "Allow",
+        Resource = "*"
+      },
+    ]
+  })
+}
