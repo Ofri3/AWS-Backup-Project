@@ -65,9 +65,18 @@ resource "aws_iam_role_policy" "backup_role_policy" {
           "backup:ListRecoveryPointsByBackupVault",
           "s3:GetBucketTagging",
           "s3:ListAllMyBuckets",
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject",
           "tag:GetResources"
         ],
-        Resource = "*"
+        Resource = [
+          "arn:aws:s3:::eks-velero-backup-bucket",
+          "arn:aws:s3:::eks-velero-backup-bucket/*",
+          "arn:aws:s3:::terraform-state-ofri",
+          "arn:aws:s3:::terraform-state-ofri/*"
+        ]
       },
       {
         Effect = "Allow",

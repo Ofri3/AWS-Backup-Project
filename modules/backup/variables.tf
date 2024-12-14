@@ -15,7 +15,7 @@ variable "backup_rule_name" {
 
 variable "schedule" {
   description = "The schedule in cron expression for backups."
-  default     = "cron(0 12 * * ? *)"
+  default     = "cron(0 * * * ? *)"
 }
 
 variable "delete_after" {

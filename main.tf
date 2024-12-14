@@ -19,6 +19,12 @@ terraform {
       version = "~> 5.0"
     }
   }
+  backend "s3" {
+    bucket                  = "terraform-state-ofri"
+    key                     = "terraform.tfstate"
+    region                  = "us-east-2"
+    shared_credentials_file = "~/.aws/credentials"
+  }
 }
 
 provider "aws" {
@@ -121,7 +127,7 @@ module "aws_backup" {
   backup_vault_name = "ofri-backup-project"
   backup_plan_name  = "ofri-backup-plan"
   backup_rule_name  = "ofri-backup-rule"
-  schedule          = "cron(0 * * * ? *)" # Daily at 6 PM UTC
+  schedule          = "cron(0 * * * ? *)" # Hourly Backup
   delete_after      = 97
   cold_storage_after = 7
   selection_name    = "ofri-backup-selection"

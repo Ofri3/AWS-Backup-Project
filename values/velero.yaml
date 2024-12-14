@@ -20,11 +20,11 @@ configuration:
       provider: aws
 schedules:
   daily-backup:
-    schedule: "0 * * * *"  # Cron job: Runs hourly
+    schedule: "0 * * * ? *"  # Cron job: Runs hourly
     template:
       ttl: 90m  # Time to live for the backup (90 minutes)
       includedNamespaces:
-        - "ofri-jenkins"  # Include all namespaces
+        - "ofri-jenkins"  # Include specific namespace rather than all namespaces ("*")
       includedResources:
         - "*"  # Include all resource types
       snapshotVolumes: true  # Capture snapshots of Persistent Volumes
