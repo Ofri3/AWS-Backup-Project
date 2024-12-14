@@ -1,0 +1,30 @@
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.5.0
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+# Configure AWS S3 as a Backend Storage Location
+configuration:
+  backupStorageLocation:
+    - name: default
+      bucket: ${bucket_name}
+      provider: aws
+      config:
+        region: ${region}
+        s3Url: https://s3-${region}.amazonaws.com/
+  volumeSnapshotLocation:
+    - name: default
+      config:
+        region: ${region}
+      provider: aws
+schedules:
+  daily-backup:
+    schedule: "0 * * * *"  # Cron job: Runs hourly
+    template:
+      ttl: 90m  # Time to live for the backup (90 minutes)
+      includedNamespaces:
+        - "ofri-jenkins"  # Include all namespaces
+      includedResources:
+        - "*"  # Include all resource types
+      snapshotVolumes: true  # Capture snapshots of Persistent Volumes
