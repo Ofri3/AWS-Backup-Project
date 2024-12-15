@@ -50,5 +50,10 @@ variable "role_name" {
 
 variable "role_policy_name" {
   description = "The name of the IAM role policy."
-  default     = "backup-policy"
+  default     = "AWSBackupServiceRolePolicyForS3Backup"
+}
+
+variable "role_policy_arn" {
+  description = "The arn of the IAM role policy."
+  default     = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
 }

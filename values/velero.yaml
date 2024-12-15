@@ -20,7 +20,7 @@ configuration:
       provider: aws
 schedules:
   daily-backup:
-    schedule: "0 * * * ? *"  # Cron job: Runs hourly
+    schedule: "0 * * * *"  # Cron job: Runs hourly
     template:
       ttl: 90m  # Time to live for the backup (90 minutes)
       includedNamespaces:

@@ -29,65 +29,39 @@ resource "aws_backup_selection" "backup_resources" {
   }
 }
 
-resource "aws_iam_role" "backup_role" {
-  name = var.role_name
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
 
-  assume_role_policy = jsonencode(
-    {
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action = "sts:AssumeRole"
-          Effect = "Allow"
-          Principal = {
-            Service = "backup.amazonaws.com"
-          }
-        },
-      ]
+    principals {
+      type        = "Service"
+      identifiers = ["backup.amazonaws.com"]
     }
-  )
+
+    actions = ["sts:AssumeRole"]
+  }
 }
 
-resource "aws_iam_role_policy" "backup_role_policy" {
-  name = var.role_policy_name
-  role = aws_iam_role.backup_role.name
+resource "aws_iam_role" "backup_role" {
+  name               = var.role_name
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "backup:StartBackupJob",
-          "backup:ListBackupJobs",
-          "backup:GetBackupVaultAccessPolicy",
-          "backup:ListBackupVaults",
-          "backup:ListRecoveryPointsByBackupVault",
-          "s3:GetBucketTagging",
-          "s3:ListAllMyBuckets",
-          "s3:GetObject",
-          "s3:ListBucket",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "tag:GetResources"
-        ],
-        Resource = [
-          "arn:aws:s3:::eks-velero-backup-bucket",
-          "arn:aws:s3:::eks-velero-backup-bucket/*",
-          "arn:aws:s3:::terraform-state-ofri",
-          "arn:aws:s3:::terraform-state-ofri/*"
-        ]
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "ec2:DescribeInstances",
-          "rds:DescribeDBInstances",
-          "dynamodb:DescribeTable",
-          "dynamodb:ListTables"
-        ],
-        Resource = "*"
-      }
-    ]
-  })
+data "aws_iam_policy_document" "policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["backup:Describe*"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "role_policy_name" {
+  name        = var.role_policy_name
+  description = "A test policy"
+  policy      = data.aws_iam_policy_document.policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "policy-attach" {
+  role       = var.role_name
+  policy_arn = var.role_policy_arn
 }

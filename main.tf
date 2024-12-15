@@ -134,7 +134,8 @@ module "aws_backup" {
   tag_key           = "aws_backup"
   tag_value         = "true"
   role_name         = "aws-backup-role"
-  role_policy_name  = "aws-backup-role-policy"
+  role_policy_name  = "AWSBackupServiceRolePolicyForS3Backup"
+  role_policy_arn   = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
 }
 
 
