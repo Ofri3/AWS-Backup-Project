@@ -4,6 +4,12 @@ initContainers:
     volumeMounts:
       - mountPath: /target
         name: plugins
+serviceAccount:
+  server:
+    create: true
+    name: velero-server
+    annotations:
+      "eks.amazonaws.com/role-arn": ${velero_role_arn}
 # Configure AWS S3 as a Backend Storage Location
 configuration:
   backupStorageLocation:
@@ -19,12 +25,12 @@ configuration:
         region: ${region}
       provider: aws
 schedules:
-  daily-backup:
-    schedule: "0 * * * *"  # Cron job: Runs hourly
+  hourly-backup:
+    schedule: "0 * * * *"  # Cron job: Runs every 1 hour
     template:
       ttl: 90m  # Time to live for the backup (90 minutes)
       includedNamespaces:
-        - "ofri-jenkins"  # Include specific namespace rather than all namespaces ("*")
+        - "ofri-nginx"  # Include specific namespace rather than all namespaces ("*")
       includedResources:
         - "*"  # Include all resource types
       snapshotVolumes: true  # Capture snapshots of Persistent Volumes
