@@ -7,22 +7,22 @@ initContainers:
 serviceAccount:
   server:
     create: true
-    name: velero-server
+    name: velero
     annotations:
       "eks.amazonaws.com/role-arn": ${velero_role_arn}
 # Configure AWS S3 as a Backend Storage Location
 configuration:
   backupStorageLocation:
     - name: default
-      bucket: ${bucket_name}
+      bucket: eks-velero-backup-bucket
       provider: aws
       config:
-        region: ${region}
-        s3Url: https://s3-${region}.amazonaws.com/
+        region: us-east-2
+        s3Url: https://s3-us-east-2.amazonaws.com/
   volumeSnapshotLocation:
     - name: default
       config:
-        region: ${region}
+        region: us-east-2
       provider: aws
 schedules:
   hourly-backup:
