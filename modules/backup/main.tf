@@ -61,7 +61,12 @@ resource "aws_iam_policy" "role_policy_name" {
   policy      = data.aws_iam_policy_document.policy.json
 }
 
-resource "aws_iam_role_policy_attachment" "policy-attach" {
+resource "aws_iam_role_policy_attachment" "backup_policy_attach" {
   role       = var.role_name
-  policy_arn = var.role_policy_arn
+  policy_arn = var.s3_backup_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "restore_policy_attach" {
+  role       = var.role_name
+  policy_arn = var.s3_restore_policy_arn
 }
